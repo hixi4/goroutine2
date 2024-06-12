@@ -8,7 +8,8 @@ import (
 )
 
 // Генеруємо випадкові числа та надсилаємо їх у канал
-func generateNumbers(numCh chan<- int, minMaxCh <-chan [2]int) {
+func generateNumbers(numCh chan<- int, minMaxCh <-chan [2]int, wg *sync.WaitGroup) {
+	defer wg.Done()
 	for {
 		select {
 		case minMax := <-minMaxCh:
@@ -22,7 +23,8 @@ func generateNumbers(numCh chan<- int, minMaxCh <-chan [2]int) {
 }
 
 // Отримуємо випадкові числа та знаходимо найбільше й найменше числа
-func findMinMax(numCh <-chan int, minMaxCh chan<- [2]int) {
+func findMinMax(numCh <-chan int, minMaxCh chan<- [2]int, wg *sync.WaitGroup) {
+	defer wg.Done()
 	var min, max int
 	min, max = int(^uint(0)>>1), -int(^uint(0)>>1)-1 // Ініціалізуємо min та max
 
